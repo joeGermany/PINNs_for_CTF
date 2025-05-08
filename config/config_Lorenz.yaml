@@ -1,0 +1,8 @@
+dataset:
+  name: ODE_Lorenz
+  pair_id: 'all'
+model:
+  name: PINN
+  learning_rate: 0.001
+  epochs: 50
+  
