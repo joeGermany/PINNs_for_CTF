@@ -130,7 +130,6 @@ class PINN:
         # losshistory, train_state = model.train(callbacks=[variable])
 
         # print("Learned parameters:")
-        # print(f"sigma = {sigma.numpy()[0]:.4f}, rho = {rho.numpy()[0]:.4f}, beta = {beta.numpy()[0]:.4f}")
         self.model = model
 
         dde.saveplot(losshistory, train_state, issave=True, isplot=False)
