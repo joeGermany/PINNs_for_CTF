@@ -26,15 +26,13 @@ def main(config_path):
 
     for pair_id in pair_ids:
         train_data, init_data = load_dataset(dataset_name, pair_id)
-        print(init_data)
         training_timesteps = get_training_timesteps(dataset_name, pair_id)
         prediction_timesteps = get_prediction_timesteps(dataset_name, pair_id)
         delta_t = get_metadata(dataset_name)["delta_t"]
 
         model = PINN(pair_id, config, train_data, init_data, training_timesteps, prediction_timesteps, delta_t)
         predictions = model.predict()
-        predictions = predictions.T
-
+        
         results = evaluate(dataset_name, pair_id, predictions)
         results_directory = save_results(dataset_name, model_name, batch_id, pair_id, config, predictions, results)
 

@@ -17,9 +17,9 @@ import matplotlib.pyplot as plt
 
 ## Learnable parameters (with initial guesses)
 ## We guess, quite , that the parameters are around the canonically used chaotic Lorenz parameters.
-sigma = dde.Variable(10.0)
-rho = dde.Variable(28.0)
-beta = dde.Variable(2.6)
+sigma = dde.Variable(1.0) # dde.Variable(10.0)
+rho = dde.Variable(1.0) # dde.Variable(28.0)
+beta = dde.Variable(1.0) # dde.Variable(2.6)
 
 def Lorenz_pde(x, y):
     """
@@ -67,29 +67,38 @@ class PINN:
 
     def define_problem(self):
         # We add training data as boundary points to add them conveniently in the loss function.
+        # print(self.training_timesteps[0])
         observe_t = self.training_timesteps[0].reshape(-1, 1)
+        # print(observe_t)
+
+        print("Train_data", self.train_data)
+        print("first column: ", self.train_data[0][:, 0])
+        print("second column: ", self.train_data[0][:, 1])
         observe_y = [
-            self.train_data[0][0].reshape(-1, 1),
-            self.train_data[0][1].reshape(-1, 1),
-            self.train_data[0][2].reshape(-1, 1)
+            self.train_data[0][:, 0].reshape(-1, 1),
+            self.train_data[0][:, 1].reshape(-1, 1),
+            self.train_data[0][:, 2].reshape(-1, 1)
         ]
+        print(observe_y, observe_y[0], observe_y[1])
         self.observe_bc = [
             dde.icbc.PointSetBC(observe_t, observe_y[0], component=0),
             dde.icbc.PointSetBC(observe_t, observe_y[1], component=1),
             dde.icbc.PointSetBC(observe_t, observe_y[2], component=2),
         ]
 
+        print(self.observe_bc)
+
         self.data = dde.data.PDE(
             self.geom,
             self.pde,
             self.ic + self.observe_bc,
-            num_domain=50, # change these??
-            num_boundary=2, # change these??
+            num_domain=self.config["model"]["num_of_domain_points"], # change these??
+            num_boundary=self.config["model"]["num_of_boundary_points"], # change these??
             anchors=observe_t,
         )
 
     def get_model(self):
-        net = dde.nn.FNN([1] + [40] * 3 + [3], "tanh", "Glorot uniform")
+        net = dde.nn.FNN([1] + [self.config["model"]["num_of_neurons"]] * self.config["model"]["num_of_layers"] + [3], "tanh", "Glorot uniform")
         return dde.Model(self.data, net)
 
     def train(self):
@@ -100,16 +109,24 @@ class PINN:
             external_trainable_variables, period=600, filename="variables.dat"
         )
 
+        loss_weights = [1, 1, 1, 1, 1, 1, 10, 10, 10] # 10 for boundary points, which include all the datset.
+
         # Train with ADAM optimizer
         model.compile(
-            "adam", lr=self.config["model"]["learning_rate"], external_trainable_variables=external_trainable_variables
+            "adam", lr=self.config["model"]["learning_rate"], 
+            external_trainable_variables=external_trainable_variables,
+            loss_weights=loss_weights,
         )
 
-        losshistory, train_state = model.train(iterations=self.config["model"]["epochs"], callbacks=[variable])
+        losshistory, train_state = model.train(
+            iterations=self.config["model"]["epochs"], 
+            callbacks=[variable],
+            display_every=100
+        )
 
         # Fine-tune with L-BFGS-B
-        model.compile("L-BFGS-B", external_trainable_variables=external_trainable_variables)
-        losshistory, train_state = model.train(callbacks=[variable])
+        # model.compile("L-BFGS-B", external_trainable_variables=external_trainable_variables)
+        # losshistory, train_state = model.train(callbacks=[variable])
 
         # print("Learned parameters:")
         # print(f"sigma = {sigma.numpy()[0]:.4f}, rho = {rho.numpy()[0]:.4f}, beta = {beta.numpy()[0]:.4f}")
