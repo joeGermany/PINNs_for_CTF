@@ -6,7 +6,7 @@ model:
   name: PINN
   learning_rate: 0.001
   epochs: 3000
-  num_of_layers: 5
-  num_of_neurons: 50
-  num_of_boundary_points: 200
-  num_of_domain_points: 50
+  num_of_layers: 4
+  num_of_neurons: 40
+  num_of_boundary_points: 800
+  num_of_domain_points: 800

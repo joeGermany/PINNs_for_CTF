@@ -109,7 +109,7 @@ class PINN:
             external_trainable_variables, period=600, filename="variables.dat"
         )
 
-        loss_weights = [1, 1, 1, 1, 1, 1, 10, 10, 10] # 10 for boundary points, which include all the datset.
+        loss_weights = [1, 1, 1, 1, 1, 1, 60, 60, 60] # 10 for boundary points, which include all the datset.
 
         # Train with ADAM optimizer
         model.compile(
