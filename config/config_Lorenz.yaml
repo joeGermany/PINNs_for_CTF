@@ -4,8 +4,8 @@ dataset:
 
 model:
   name: PINN
-  learning_rate: 0.001
-  epochs: 5000
+  learning_rate: 0.005
+  epochs: 10000
   num_of_layers: 4
   num_of_neurons: 40
   num_of_boundary_points: 800
