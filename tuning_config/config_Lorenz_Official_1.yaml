@@ -1,0 +1,33 @@
+dataset: 
+  name: Lorenz_Official
+  pair_id: 
+  - 1
+
+model:
+  name: PINN
+  version: 1
+  train_split: 0.8
+  seed: 42
+  train_ratio: 0.9
+
+
+hyperparameters:
+  epochs:
+    type: randint
+    lower_bound: 5000
+    upper_bound: 30000
+
+  learning_rate:
+    type: loguniform
+    lower_bound: 1e-5
+    upper_bound: 1e-2
+
+  num_of_layers:
+    type: randint
+    lower_bound: 3
+    upper_bound: 6
+  
+  num_of_neurons:
+    type: randint
+    lower_bound: 10
+    upper_bound: 60

@@ -1,0 +1,106 @@
+dataset: 
+  name: Lorenz_Official
+  pair_id: 
+  - 1
+
+model:
+  name: KAN
+  version: 1 
+  train_split: 0.8
+  seed: 42
+  train_ratio: 0.9
+
+
+hyperparameters:
+  steps:
+    type: randint
+    lower_bound: 50
+    upper_bound: 10000
+  
+  pred_window: 
+    type: randint
+    lower_bound: 1
+    upper_bound: 5
+
+  lag:
+    type: randint
+    lower_bound: 1
+    upper_bound: 50
+
+  batch:
+    type: choice
+    choices: [-1, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60,
+            61, 62, 63, 64, 65, 66, 67, 68, 69, 70,
+            71, 72, 73, 74, 75, 76, 77, 78, 79, 80,
+            81, 82, 83, 84, 85, 86, 87, 88, 89, 90,
+            91, 92, 93, 94, 95, 96, 97, 98, 99, 100]
+  
+  lr:
+    type: loguniform
+    lower_bound: 1.0e-05
+    upper_bound: 1.0e-01
+  
+  optimizer:
+    type: choice
+    choices: ['Adam', 'LBFGS']
+  
+  base_fun:
+    type: choice
+    choices: ['silu', 'identity', 'zero']
+  
+  num_neurons: 
+    type: randint
+    lower_bound: 1
+    upper_bound: 5
+  
+  one_d:
+    type: randint
+    lower_bound: 1
+    upper_bound: 10
+
+  two_d:
+    type: randint
+    lower_bound: 1
+    upper_bound: 10
+
+  three_d:
+    type: randint
+    lower_bound: 1
+    upper_bound: 10
+  
+  four_d:
+    type: randint
+    lower_bound: 1
+    upper_bound: 10
+  
+  five_d:
+    type: randint
+    lower_bound: 1
+    upper_bound: 10
+  
+  grid:
+    type: randint
+    lower_bound: 1
+    upper_bound: 5
+  
+  update_grid:
+    type: choice
+    choices: 
+    - True
+    - False
+  
+  k: 
+    type: randint
+    lower_bound: 1
+    upper_bound: 3
+  
+  lamb: 
+    type: loguniform
+    lower_bound: 1.0e-07
+    upper_bound: 1.0e-03
+  
+  lamb_coef: 
+    type: loguniform
+    lower_bound: 1.0e-07
+    upper_bound: 1.0e-03
+
